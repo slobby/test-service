@@ -20,3 +20,7 @@
 ### How to use
 - load in "SOURCE_BUCKET" some files with keys: /input/{file-name}.txt(csv)
 - check emails
+
+### How to remove
+- in dir "file-handler-python" run command `sls remove`
+- in dir "sqs-handler-python" run command `sls remove`
