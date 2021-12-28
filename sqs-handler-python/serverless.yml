@@ -1,0 +1,58 @@
+service: sqs-handler-python
+frameworkVersion: '2 || 3'
+variablesResolutionMode: '20210326'
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: python3.9
+  stage: 'dev'
+  region: 'eu-west-1'
+  lambdaHashingVersion: '20201221'
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action: 'sqs:*'
+      Resource:
+        Fn::ImportValue: 'file-handler-python:filesInfoSQS'
+    - Effect: 'Allow'
+      Action: 'sns:*'
+      Resource: !Ref fileInfoTopic
+
+resources:
+  Resources:
+    fileInfoTopic:
+      Type: 'AWS::SNS::Topic'
+      Properties:
+        DisplayName: 'File loaded info'
+        TopicName: 'service-sns-topic'
+    fileInfoTopicSubscription1:
+      Type: 'AWS::SNS::Subscription'
+      Properties:
+        Endpoint: 'aws-condition1@rambler.ru'
+        Protocol: 'email'
+        TopicArn:
+          Ref: fileInfoTopic
+        FilterPolicy: '{"size": [{ "numeric": ["<", 100] }]}'
+    fileInfoTopicSubscription2:
+      Type: 'AWS::SNS::Subscription'
+      Properties:
+        Endpoint: 'aws-condition2@rambler.ru'
+        Protocol: 'email'
+        TopicArn: !Ref fileInfoTopic
+        FilterPolicy: '{"size": [{ "numeric": [">=", 100] }]}'
+
+functions:
+  fileHandler:
+    handler: handler.sns_sender
+    events:
+      - sqs:
+          arn:
+            Fn::ImportValue: 'file-handler-python:filesInfoSQS'
+          batchSize: 5
+          enabled: true
+    environment:
+      SNS_FILE_INFO_TOPIC_ARN: !Ref fileInfoTopic
+
+package:
+  patterns:
+    - '!node_modules/**'

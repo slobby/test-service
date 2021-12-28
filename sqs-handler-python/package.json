@@ -1,0 +1,7 @@
+{
+  "name": "sqs-handler-python",
+  "version": "1.0.0",
+  "description": "Handle sqs messages on AWS",
+  "author": "andslobby@gmail.com",
+  "license": "MIT",
+}
