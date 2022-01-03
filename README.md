@@ -13,7 +13,7 @@
 | email  | password |
 |:-------------:|:-------------:|
 | aws-condition1@rambler.ru      | Aws-condition1     |
-| aws-condition2@rambler.ru      | Aws-condition1      |
+| aws-condition2@rambler.ru      | Aws-condition2      |
 
 - to enable Server access logging - enable its in `console-properties-Server access logging`
 
